@@ -6,12 +6,21 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 16:33:18 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/04 23:16:22 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/04 23:33:39 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int ft_strlen(const char *s)
+{
+	int i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
 char	*last_tab(const char *s, unsigned int start, size_t len, char *str);
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -76,6 +85,8 @@ int	ft_words(char *s)
 	return (cmpt + 1);
 }
 
+int	simple_quote(t_data *data, int index_i, int index_j);
+
 void	fill_tab_arg(t_data *data)
 {
 	int i;
@@ -90,15 +101,14 @@ void	fill_tab_arg(t_data *data)
 	k = i;
 	while(data->line[i])
 	{
-		printf("1");
-		if (data->line[i] == ' ' || data->line[i] == '\0');
+		if (data->line[i] == ' ' || data->line[i + 1] == '\0');
 		{
 			data->fill_tab[j++] = ft_substr(data->line, k, (i - 1));
 			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
 				i++;
 			k = i + 1;
 		}
-		if (data->line[i] == "'")
+		if (data->line[i] == '\'')
 		{
 			i = simple_quote(data, i, j);
 			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
@@ -110,7 +120,7 @@ void	fill_tab_arg(t_data *data)
 	}
 }
 
-int	simple_quote(t_data *data, int index, int j)
+int	simple_quote(t_data *data, int index_i, int index_j)
 {
 	int i;
 	int j;
@@ -121,25 +131,25 @@ int	simple_quote(t_data *data, int index, int j)
 	while (data->line[i])
 	{
 		i++;
-		if (data->line[i] == "'")
+		if (data->line[i] == '\'')
 		{
 			fst_index = i;
 			j = i;
-			while (data->line[j] != "'")
+			while (data->line[j] != '\'')
 			{
 				j++;
-				if (data->line[j] == NULL)
+				if (data->line[j] == '\0')
 					break;
-				else if (data->line[j] == "'" && data->line[j + 1] != "'")
+				else if (data->line[j] == '\'' && data->line[j + 1] != '\'')
 				{
 					snd_index = j;
-					data->fill_tab[j] = ft_substr(data->line, fst_index, snd_index);
+					data->fill_tab[index_j] = ft_substr(data->line, fst_index, snd_index);
 					return (snd_index);
 				}
 			}
 		}
 	}
-	return (index);
+	return (index_i);
 }
 
 // int verif_quote_argument(t_data *data)
