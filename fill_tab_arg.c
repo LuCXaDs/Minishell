@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 16:33:18 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/04 23:33:39 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/11 16:34:30 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,48 +20,6 @@ int ft_strlen(const char *s)
 	while (s[i])
 		i++;
 	return (i);
-}
-char	*last_tab(const char *s, unsigned int start, size_t len, char *str);
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*str;
-
-	if (!s)
-		return (NULL);
-	if (start >= ft_strlen(s))
-	{
-		str = malloc(sizeof(char) * 1);
-		*str = '\0';
-		return (str);
-	}
-	if (len >= ft_strlen(s))
-		len = ft_strlen(s) - start;
-	str = (char *)malloc(sizeof (*s) * (len + 1));
-	if (!str)
-		return (NULL);
-	str = last_tab(s, start, len, str);
-	return (str);
-}
-
-char	*last_tab(const char *s, unsigned int start, size_t len, char *str)
-{
-	size_t	i;
-	size_t	si;
-
-	si = 0;
-	i = 0;
-	while (s[i])
-	{
-		if (i >= (size_t)start && si < len)
-		{
-			str[si] = s[i];
-			si++;
-		}
-		i++;
-	}
-	str[si] = '\0';
-	return (str);
 }
 
 int	ft_words(char *s)
@@ -85,75 +43,287 @@ int	ft_words(char *s)
 	return (cmpt + 1);
 }
 
-int	simple_quote(t_data *data, int index_i, int index_j);
+char	*ft_strcat(char *dest, char *src)
+{
+	int	i;
+	int	m;
 
-void	fill_tab_arg(t_data *data)
+	i = 0;
+	m = 0;
+	while (dest[i])
+		i++;
+	while (src[m])
+		dest[i++] = src[m++];
+	dest[i] = '\0';
+	return (dest);
+}
+
+// int	fill_character_into_tab(int i, int j, t_data *data)
+// {
+// 	int k;
+
+// 	k = i;
+// 	while (data->line[i])
+// 	{
+// 		if (data->line[i] == ' ')
+// 			break;
+// 		i++;
+// 	}
+// 	data->fill_tab[j] = ft_substr(data->line, k, i);
+// 	data->fill_tab[j + 1] = NULL;
+// 	// while (data->line[i] == ' ')
+// 	// 	i++;
+// 	return (i);
+// }
+
+// Count, how many character that you choice in variable 'c'
+int	ft_strnb(char *str, char c)
 {
 	int i;
-	int j;
-	int k;
+	int nb;
+
+	nb = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			nb++;
+		i++;
+	}
+	return (nb);
+}
+
+char	*ft_strdel(char *str, char c, int nb)
+{
+	char *final;
+	int quote;
+	int i;
+	int	j;
 
 	i = 0;
 	j = 0;
-	data->fill_tab = malloc(sizeof(char *) * ft_words(data->line) + 1);
-	while (data->line[i] == ' ')
-		i++;
-	k = i;
-	while(data->line[i])
+	quote = 0;
+	while (str[i])
 	{
-		if (data->line[i] == ' ' || data->line[i + 1] == '\0');
-		{
-			data->fill_tab[j++] = ft_substr(data->line, k, (i - 1));
-			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
+		if (nb > quote)
+			if (str[i] == c)
+			{
+				quote++;
 				i++;
-			k = i + 1;
-		}
-		if (data->line[i] == '\'')
-		{
-			i = simple_quote(data, i, j);
-			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
-				i++;
-			j++;
-			k = i + 1;
-		}
-		i++;
+			}
+		final[j++] = str[i++];
 	}
+	final[j] = '\0';
+	final = malloc(sizeof(char) * ft_strlen(final) + 1);
+	free(str);
+	return (final);
+
 }
 
-int	simple_quote(t_data *data, int index_i, int index_j)
+// void	loop_check_tab(int i, int j, t_data *data)
+// /* k_s_q ; k : is an index ; s_q = simpe_quote*/
+// /* k_s_q ; k : is an index ; s_d = double_quote*/
+// {
+// 	char *str;
+
+// 	if (data->fill_tab[i][j] == '\'')
+// 		data->check_tab.simple_quote++;
+// 	if (data->fill_tab[i][j] == '\"')
+// 		data->check_tab.double_quote++;
+// }
+
+void	check_tab(t_data *data)
 {
 	int i;
-	int j;
-	int fst_index;
-	int snd_index;
 
-	i = -1;
-	while (data->line[i])
+	i = 0;
+	while (data->fill_tab[i])
 	{
-		i++;
-		if (data->line[i] == '\'')
+		data->check_tab.simple_quote = ft_strnb(data->fill_tab[i], '\'');
+		data->check_tab.double_quote = ft_strnb(data->fill_tab[i], '\"');
+		if (data->check_tab.double_quote >= 2)
 		{
-			fst_index = i;
-			j = i;
-			while (data->line[j] != '\'')
-			{
-				j++;
-				if (data->line[j] == '\0')
-					break;
-				else if (data->line[j] == '\'' && data->line[j + 1] != '\'')
-				{
-					snd_index = j;
-					data->fill_tab[index_j] = ft_substr(data->line, fst_index, snd_index);
-					return (snd_index);
-				}
-			}
+			if (data->check_tab.double_quote % 2 == 0)
+				data->fill_tab[i] = ft_strdel(data->fill_tab[i], '\"', data->check_tab.double_quote);
+			else
+				data->fill_tab[i] = ft_strdel(data->fill_tab[i], '\"', data->check_tab.double_quote - 1);
 		}
+		i++;
 	}
-	return (index_i);
 }
+
+void	fill_tab_arg(t_data *data)
+{
+	data->fill_tab = ft_split(data->line, ' ');
+	check_tab(data);
+//	check_tab
+	// int i;
+	// int j;
+	// int k;
+
+	// i = 0;
+	// j = 0;
+	// data->fill_tab = malloc(sizeof(char *) * ft_words(data->line) + 1);
+	// while (data->line[i] == ' ')
+	// 	i++;
+	// k = i;
+	// while(data->line[i])
+	// {
+	// 	// if (data->line[i] == '\'')
+	// 	// 	;
+	// 	// else if (data->line[i] == '\"')
+	// 	// 	;
+	// 	if (data->line[i] >= '!' && data->line[i] <= '~')
+	// 	{
+	// 		i = fill_character_into_tab(i, j, data);
+	// 		j++;
+	// 	}
+	// 	if (data->line[i] == ' ')
+	// 		while (data->line[i] == ' ')
+	// 			i++;
+	// 	else
+	// 		i++;
+	// }
+}
+
+// int	data->check_tab.simple_quote(t_data *data, int index_i, int index_j);
+
+// void	fill_tab_arg(t_data *data)
+// {
+// 	int i;
+// 	int j;
+// 	int k;
+
+// 	i = 0;
+// 	j = 0;
+// 	data->fill_tab = malloc(sizeof(char *) * ft_words(data->line) + 1);
+// 	while (data->line[i] == ' ')
+// 		i++;
+// 	k = i;
+// 	while(data->line[i])
+// 	{
+// 		if (data->line[i] == ' ' || data->line[i + 1] == '\0');
+// 		{
+// 			data->fill_tab[j] = ft_substr(data->line, k, (i - 1));
+// 			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
+// 				i++;
+// 			k = i + 1;
+// 			j++;
+// 		}
+// 		if (data->line[i] == '\'')
+// 		{
+// 			i = data->check_tab.simple_quote(data, i, j);
+// 			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
+// 				i++;
+// 			j++;
+// 			k = i + 1;
+// 		}
+// 		i++;
+// 	}
+// }
+
+// int	data->check_tab.simple_quote(t_data *data, int index_i, int index_j)
+// {
+// 	int i;
+// 	int j;
+// 	int fst_index;
+// 	int snd_index;
+
+// 	i = -1;
+// 	while (data->line[i])
+// 	{
+// 		i++;
+// 		if (data->line[i] == '\'')
+// 		{
+// 			fst_index = i;
+// 			j = i;
+// 			while (data->line[j] != '\'')
+// 			{
+// 				j++;
+// 				if (data->line[j] == '\0')
+// 					break;
+// 				else if (data->line[j] == '\'' && data->line[j + 1] != '\'')
+// 				{
+// 					snd_index = j;
+// 					data->fill_tab[index_j] = ft_substr(data->line, fst_index, snd_index);
+// 					return (snd_index);
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return (index_i);
+// }
+
+// int	data->check_tab.simple_quote(t_data *data, int index_i, int index_j);
+
+// void	fill_tab_arg(t_data *data)
+// {
+// 	int i;
+// 	int j;
+// 	int k;
+
+// 	i = 0;
+// 	j = 0;
+// 	data->fill_tab = malloc(sizeof(char *) * ft_words(data->line) + 1);
+// 	while (data->line[i] == ' ')
+// 		i++;
+// 	k = i;
+// 	while(data->line[i])
+// 	{
+// 		if (data->line[i] == ' ' || data->line[i + 1] == '\0');
+// 		{
+// 			data->fill_tab[j] = ft_substr(data->line, k, (i - 1));
+// 			j++;
+// 			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
+// 				i++;
+// 			k = i + 1;
+// 		}
+// 		if (data->line[i] == '\'')
+// 		{
+// 			i = data->check_tab.simple_quote(data, i, j);
+// 			while (data->line[i] == ' ' && data->line[i + 1] == ' ')
+// 				i++;
+// 			j++;
+// 			k = i + 1;
+// 		}
+// 		i++;
+// 	}
+// }
+
+// int	data->check_tab.simple_quote(t_data *data, int index_i, int index_j)
+// {
+// 	int i;
+// 	int j;
+// 	int fst_index;
+// 	int snd_index;
+
+// 	i = -1;
+// 	while (data->line[i])
+// 	{
+// 		i++;
+// 		if (data->line[i] == '\'')
+// 		{
+// 			fst_index = i;
+// 			j = i;
+// 			while (data->line[j] != '\'')
+// 			{
+// 				j++;
+// 				if (data->line[j] == '\0')
+// 					break;
+// 				else if (data->line[j] == '\'' && data->line[j + 1] != '\'')
+// 				{
+// 					snd_index = j;
+// 					data->fill_tab[index_j] = ft_substr(data->line, fst_index, snd_index);
+// 					return (snd_index);
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return (index_i);
+// }
 
 // int verif_quote_argument(t_data *data)
 // {
-// 	simple_quote(data);
+// 	data->check_tab.simple_quote(data);
 // 	double_quote(data);
 // }
