@@ -1,16 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils01.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 16:35:07 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/17 19:39:06 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/19 18:13:04 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// ------------------PROTOTYPE POUR LE ".h"------------------
+// {file} [utils01.c]
+// char	**ft_split(char const *s, char c);
+// char	*ft_substr(char const *s, unsigned int start, size_t len);
+// ------------------PROTOTYPE POUR LE ".h"------------------
 
 char			**ft_tab(const char *s, char c, char **final_tab);
 static size_t	ft_words(const char *s, char c);
@@ -117,29 +123,4 @@ char	*last_tab(const char *s, unsigned int start, size_t len, char *str)
 	}
 	str[si] = '\0';
 	return (str);
-}
-
-char	*ft_strnstr(const char *big, const char *little, size_t len)
-{
-	size_t	i;
-	size_t	m;
-
-	i = 0;
-	if (*little == '\0' || little == NULL)
-		return ((char *)big);
-	while (big[i] && i < len)
-	{
-		if (little[0] == big[i])
-		{
-			m = 0;
-			while (little[m] == big[i + m] && i + m < len)
-			{
-				m++;
-				if (little[m] == '\0')
-					return ((char *)big + i);
-			}
-		}
-		i++;
-	}
-	return (NULL);
 }
