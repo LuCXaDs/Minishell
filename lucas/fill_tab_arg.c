@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 16:33:18 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/18 17:41:32 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/19 15:09:11 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,8 @@ void	find_and_split(t_data *data)
 			|| (data->line[data->check_tab.i + data->check_tab.len] ==  '>' \
 			&& data->line[data->check_tab.i + data->check_tab.len + 1] ==  '>'))
 				split_special_character(2, data);
-			split_special_character(1, data);
+			else
+				split_special_character(1, data);
 			break;
 		}
 		if (data->line[data->check_tab.i + data->check_tab.len] == '\'')
