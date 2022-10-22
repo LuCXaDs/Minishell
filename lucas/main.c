@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 17:05:10 by gtelnoff          #+#    #+#             */
-/*   Updated: 2022/10/19 18:23:19 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/19 22:01:07 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,22 @@ int	main(int ac, char **av, char **env)
 	init_struct_value(&data);
 	data.line = first_parser(data.line);
 	fill_tab_arg(&data);
-	//search_path(&data);
-	//export(&data);
 	int i = 0;
+	while (data.fill_tab[i])
+	{
+		printf("%s\n", data.fill_tab[i]);
+		i++;
+	}
+	search_path(&data);
+	//export(&data);
+	i = 0;
 	while (data.fill_tab[i])
 	{
 		printf("%s\n", data.fill_tab[i]);
 		free(data.fill_tab[i]);
 		i++;
 	}
-	free(data.line);
+//	free(data.line);
 	free(data.fill_tab);
 	return (0);
 }

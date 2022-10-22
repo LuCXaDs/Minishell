@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:51:01 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 18:31:38 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/19 21:39:52 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ unsigned char	*first_parser(unsigned char *line)
 		i++;
 	}
 	line = (unsigned char *)str;
-	printf("%s\n\n", line);
+	// printf("%s\n\n", line);
 	return (line);
 }
 

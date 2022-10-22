@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 16:13:06 by gtelnoff          #+#    #+#             */
-/*   Updated: 2022/10/19 18:25:39 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/19 21:55:19 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,10 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 // {file} [utils02.c]
 int	ft_strlen(const char *s);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
+void	*ft_calloc(size_t nmemb, size_t size);
+void	ft_bzero(void *s, size_t n);
+
+
+void	search_path(t_data *data);
 
 # endif

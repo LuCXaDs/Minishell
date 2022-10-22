@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 15:33:13 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 15:09:58 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/19 21:53:22 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	change_tab_path(int i, int temp, t_data *data)
 	while (str[j])
 		clean[k++] = str[j++];
 	clean[k] = '\0';
-	// free(data->fill_tab[i]);
-	// free(data->var);
+	//free(data->fill_tab[i]);
+	//free(data->var);
 	data->fill_tab[i] = clean;
 }
 
@@ -86,25 +86,27 @@ int	find_path(t_data *data)
 	int i;
 	int j;
 	int len;
-	char *str;
+	char *no_dollar;
 
 	if (!data->var || !data->var[1])
 		return (1);
+	no_dollar = ft_calloc(sizeof(char), ft_strlen(data->var) + 1);
 	i = 1;
 	j = 0;
-	str = malloc(sizeof(char) * ft_strlen(data->var) + 1);
 	while (data->var[i])
-		str[j++] = data->var[i++];
-	str[i] = '\0';
+		no_dollar[j++] = data->var[i++];
+	no_dollar[i] = '\0';
 	i = 0;
-	len = ft_strlen(str);
+	len = ft_strlen(no_dollar);
 	while (data->env[i])
 	{
-		if (ft_str_path(data->env[i], str) == 1)
+		if (ft_str_path(data->env[i], no_dollar) == 1)
 		{
-			data->clean_var  = ft_strnstr(data->env[i], str, len);
+			data->clean_var  = malloc(sizeof(char) \
+			* (ft_strlen(ft_strnstr(data->env[i], no_dollar, len)) + 1));
+			data->clean_var = ft_strnstr(data->env[i], no_dollar, len);
 			data->clean_var = clean_path(data);
-			free(str);
+			free(no_dollar);
 			return (0);
 		}
 		i++;
@@ -138,39 +140,36 @@ int	chech_correct_path_arg(int i, char *str)
 
 // }
 
+void	search_path(t_data *data)
+{
+	int i;
+	int j;
+	int	m;
+	int temp;
 
-
-// void	search_path(t_data *data)
-// {
-// 	int i;
-// 	int j;
-// 	int	m;
-// 	int temp;
-
-// 	i = 0;
-// 	m = 0;
-// 	temp = 0;
-// 	while (data->fill_tab[i])
-// 	{
-// 		j = 0;
-// 		while (data->fill_tab[i][j])
-// 		{
-// 			if (data->fill_tab[i][j] == '$' && check_quote(i, '\'', data) == 1)
-// 			{
-// 				temp = j;
-// 				data->var = malloc(sizeof(char) * ft_strlen(data->fill_tab[i]));
-// 				data->var[m++] = data->fill_tab[i][j++];
-// 				while (chech_correct_path_arg(j, data->fill_tab[i]) == 1)
-// 					data->var[m++] = data->fill_tab[i][j++];
-// 				data->var[m] = '\0';
-// 			}
-// 			j++;
-// 		}
-// 		if (find_path(data) == 0)
-// 			change_tab_path(i, temp, data);
-// 		else
-// 			remove_path(i, temp, data);
-// 		printf("{%s}\n", data->fill_tab[i]);
-// 		i++;
-// 	}
-// }
+	i = 0;
+	m = 0;
+	temp = 0;
+	while (data->fill_tab[i])
+	{
+		j = 0;
+		while (data->fill_tab[i][j])
+		{
+			if (data->fill_tab[i][j] == '$' && check_quote(i, '\'', data) == 1)
+			{
+				temp = j;
+				data->var = malloc(sizeof(char) * ft_strlen(data->fill_tab[i]) + 1);
+				data->var[m++] = data->fill_tab[i][j++];
+				while (chech_correct_path_arg(j, data->fill_tab[i]) == 1)
+					data->var[m++] = data->fill_tab[i][j++];
+				data->var[m] = '\0';
+			}
+			j++;
+		}
+		if (find_path(data) == 0)
+			change_tab_path(i, temp, data);
+		// else
+		// 	remove_path(i, temp, data);
+		i++;
+	}
+}

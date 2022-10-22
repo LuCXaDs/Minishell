@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:59:21 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 18:25:53 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/19 21:55:33 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 // {file} [utils02.c]
 // int	ft_strlen(const char *s);
 // char	*ft_strnstr(const char *big, const char *little, size_t len);
+// void	*ft_calloc(size_t nmemb, size_t size);
+// void	ft_bzero(void *s, size_t n);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
 int ft_strlen(const char *s)
@@ -53,4 +55,33 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 		i++;
 	}
 	return (NULL);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*str;
+
+	if (nmemb >= 9223372036854775807 || size >= 9223372036854775807)
+		return (NULL);
+	if (nmemb == 0 || size == 0)
+		return (malloc(0));
+	str = malloc(nmemb * size);
+	if (!str)
+		return (NULL);
+	ft_bzero(str, (nmemb * size));
+	return (str);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	size_t		i;
+	char		*str;
+
+	str = (char *)s;
+	i = 0;
+	while (i < n)
+	{
+		str[i] = '\0';
+		i++;
+	}
 }
