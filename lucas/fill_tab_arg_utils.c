@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:44:45 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 18:26:44 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/23 20:00:00 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,17 @@ int	check_character(int i, int len, unsigned char * str, int nb)
 	if (nb == 1)
 		if (str[i + len] != ' ' && str[i + len])
 			return (1);
-	if (nb == 2)
-		if (str[i + len] == '|' || str[i + len] == '>' \
-		|| str[i + len] == '<')
-			return (1);
 	if (nb == 3)
 		if ((str[i + len] == '>' && str[i + len + 1] == '>') \
 		|| (str[i + len] == '<' && str[i + len + 1] == '<'))
 			return (1);
+	if (nb == 2)
+		if (str[i + len] == '|' || str[i + len] == '>' \
+		|| str[i + len] == '<')
+			return (1);
+	// if (nb == 3)
+	// 	if ((str[i + len] == '>' && str[i + len + 1] == '>')
+	// 	|| (str[i + len] == '<' && str[i + len + 1] == '<'))
+	// 		return (1);
 	return (-1);
 }

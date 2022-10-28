@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 16:33:18 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 21:38:45 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/23 19:59:02 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,8 @@ void 	split_special_character(int len, t_data *data)
 {
 	if (data->check_tab.len > 0)
 	{
-		data->fill_tab[data->check_tab.j] = \
-		ft_substr((const char *)data->line, \
+		data->fill_tab[data->check_tab.j] =
+		ft_substr((const char *)data->line,
 		data->check_tab.i, data->check_tab.len);
 		data->check_tab.j++;
 	}

@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 15:33:13 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 21:53:22 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/23 20:04:27 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,7 @@ void	change_tab_path(int i, int temp, t_data *data)
 	while (str[j])
 		clean[k++] = str[j++];
 	clean[k] = '\0';
-	//free(data->fill_tab[i]);
-	//free(data->var);
+	free(data->fill_tab[i]);
 	data->fill_tab[i] = clean;
 }
 
@@ -170,6 +169,8 @@ void	search_path(t_data *data)
 			change_tab_path(i, temp, data);
 		// else
 		// 	remove_path(i, temp, data);
+		if (data->var)
+			data->var[0] = '\0';
 		i++;
 	}
 }

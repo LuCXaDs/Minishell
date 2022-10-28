@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:59:21 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 21:55:33 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/10/23 20:39:17 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 // char	*ft_strnstr(const char *big, const char *little, size_t len);
 // void	*ft_calloc(size_t nmemb, size_t size);
 // void	ft_bzero(void *s, size_t n);
+// int	ft_strcmp(char *s1, char *s2);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
 int ft_strlen(const char *s)
@@ -84,4 +85,18 @@ void	ft_bzero(void *s, size_t n)
 		str[i] = '\0';
 		i++;
 	}
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int i;
+
+	i = 0;
+	while (s1[i] && s2[i])
+	{
+		if (s1[i] != s2[i])
+			return (s1 - s2);
+		i++;
+	}
+	return (0);
 }
