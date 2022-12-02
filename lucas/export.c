@@ -5,223 +5,147 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/17 19:05:52 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/25 17:34:58 by luserbu          ###   ########.fr       */
+/*   Created: 2022/10/19 17:51:01 by luserbu           #+#    #+#             */
+/*   Updated: 2022/12/02 15:47:13 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	strlen_stop(char *str, char c)
+// ------------------PROTOTYPE POUR LE ".h"------------------
+// {file} [export.c]
+// int	check_same_var(char *tab, t_data *data);
+// char	*add_arg_to_var(int index, char *tab, t_data *data);
+// int	loop_export(char **tab, int i, int j, t_data *data);
+// void	export(char **tab, t_data *data);
+// ------------------PROTOTYPE POUR LE ".h"------------------
+
+int	check_same_var(char *tab, t_data *data)
 {
-	int i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (i);
-		i++;
-	}
-	return (i);
-}
-// if (data->env[j][i] > data->env[j][i + 1]
-// && data->env[j][i + 1] && data->env[j][i])
-// {
-// 	tmp = data->env[j];
-// 	data->env[j] = data->env[j + 1];
-// 	data->env[j + 1] = tmp;
-// }
-
-#include <string.h>
-
-char	*add_quote(char *str)
-{
-	int i;
-	int j;
+	int		i;
+	int		len;
+	int		len_tmp;
+	char	*var;
 	char	*tmp;
 
-
-	j = 0;
 	i = 0;
-	tmp = malloc(sizeof(char) * ft_strlen(str) + 4);
-	while (str[i])
-	{
-		if (str[i] && str[i] == '=')
-		{
-			tmp[j++] = '=';
-			i++;
-			tmp[j++] = '\"';
-		}
-		tmp[j++] = str[i++];
-	}
-	tmp[j++] = '\"';
-	tmp[j] = '\0';
-	free(str);
-	return (tmp);
-}
-
-void	add_argument_into_export(t_data *data)
-{
-	int i;
-	char *tmp;
-
-	i = 0;
-	while (data->env[i])
-	{
-		tmp = ft_strjoin("declare -x ", data->env[i]);
-		tmp = add_quote(tmp);
-		free(data->env[i]);
-		data->env[i] = tmp;
-		// printf("%s\n", data->env[i]);
-		i++;
-	}
-}
-
-void	sort_list(t_data *data)
-{
-	int i;
-	int j;
-	int k;
-	int sort;
-	int verif_sort;
-	int cmpt;
-	int len;
-	// int len_var;
-	char *tmp;
-
-	i = 0;
-	len = strlen_stop(data->env[0], '=');
-	while (data->env[i])
-	{
-		if (len < strlen_stop(data->env[i], '='))
-		{
-			len = strlen_stop(data->env[i], '=');
-		}
-		i++;
-	}
-	verif_sort = i - 1;
-	i = 0;
-	cmpt = 1;
-	while (i < len)
-	{
-		k = 0;
-		while (data->env[k])
-		{
-			j = 0;
-			sort = 0;
-			while (data->env[j] && data->env[j + 1])
-			{
-				// printf("%s\n", data->env[j]);
-				if (strlen_stop(data->env[j], '=') > i \
-				&& data->env[j][i] > data->env[j + 1][i])
-				{
-					if (i > 0)
-						cmpt = strncmp(data->env[j], data->env[j + 1], i);
-					if (i == 0)
-					{
-						tmp = data->env[j];
-						data->env[j] = data->env[j + 1];
-						data->env[j + 1] = tmp;
-					}
-					if (cmpt == 0)
-					{
-						tmp = data->env[j];
-						data->env[j] = data->env[j + 1];
-						data->env[j + 1] = tmp;
-					}
-					j++;
-			}
-				else
-				{
-					j++;
-					sort++;
-				}
-			}
-			if (verif_sort == sort)
-				break;
-			k++;
-		}
-		i++;
-	}
-	i = 0;
-	while (data->env[i])
-	{
-		printf("%s\n", data->env[i]);
-		i++;
-	}
-}
-
-
-	// while (i < 15)
-	// {
-	// 	k = 0;
-	// 	while (data->env[k])
-	// 	{
-	// 		j = 0;
-	// 		while (data->env[j] && data->env[j + 1])
-	// 		{
-	// 			// printf("%s\n", data->env[j]);
-	// 			if (strlen_stop(data->env[j], '=') >= i
-	// 			&& data->env[j][i] > data->env[j + 1][i])
-	// 			{
-	// 				if (data->env[j][i] && data->env[j + 1][i])
-	// 				{
-	// 					if (i > 0)
-	// 						cmpt = ft_strcmp(ft_substr(data->env[j], 0, i),
-	// 						ft_substr(data->env[j + 1], 0, i));
-	// 					if (i == 0)
-	// 					{
-	// 						tmp = data->env[j];
-	// 						data->env[j] = data->env[j + 1];
-	// 						data->env[j + 1] = tmp;
-	// 					}
-	// 					if (cmpt == 0)
-	// 					{
-	// 						tmp = data->env[j];
-	// 						data->env[j] = data->env[j + 1];
-	// 						data->env[j + 1] = tmp;
-	// 					}
-	// 					j++;
-	// 				}
-	// 			}
-	// 			else
-	// 				j++;
-	// 		}
-	// 		k++;
-	// 	}
-	// 	i++;
-	// }
-// 	i = 0;
-// 	while (data->env[i])
-// 	{
-// 		printf("%s\n", data->env[i]);
-// 		i++;
-// 	}
-// }
-
-void	malloc_env(t_data *data)
-{
-	int i;
-
-	data->env = malloc(sizeof(char *) * 4096);
-	i = 0;
+	len = strlen_stop(tab, '=');
+	len_tmp = strlen_stop(tab, '+');
+	if (len_tmp < len)
+		len = len_tmp;
+	var = ft_strdup(tab);
+	var[len] = '\0';
 	while (data->envp[i])
 	{
-		data->env[i] = ft_substr(data->envp[i], 0, ft_strlen(data->envp[i]));
-		// printf("%s\n", data->env[i]);
+		len = strlen_stop(data->envp[i], '=');
+		tmp = ft_strdup(data->envp[i]);
+		tmp[len] = '\0';
+		if (ft_strcmp(tmp, var) == 0)
+			return (free(tmp), free(var), i);
+		free(tmp);
 		i++;
 	}
-	printf("\n\n");
-	data->env[i] = NULL;
+	free(var);
+	return (-1);
 }
 
-void	export(t_data *data)
+char	*add_arg_to_var(int index, char *tab, t_data *data)
 {
-	// data->env = data->env;
-	malloc_env(data);
-	sort_list(data);
-	add_argument_into_export(data);
+	int		i;
+	int		j;
+	char	*clean;
+
+	clean = malloc(sizeof(char) * ft_strlen(tab));
+	i = strlen_stop(tab, '=') + 1;
+	j = 0;
+	while (tab[i])
+		clean[j++] = tab[i++];
+	clean[j] = '\0';
+	clean = ft_strjoin(data->envp[index], clean);
+	return (clean);
+}
+
+int	loop_export(char **tab, int i, int j, t_data *data)
+{
+	int	index;
+	char *tmp;
+
+	index = check_same_var(tab[i], data);
+	if (index != -1)
+	{
+		if (verif_var_character(tab[i]))
+			tmp = add_arg_to_var(index, tab[i], data);
+		else
+			tmp = ft_strdup(tab[i]);
+		free(data->envp[index]);
+		data->envp[index] = tmp;
+	}
+	else
+	{
+		free(data->envp[data->len_envp + j]);
+		if (verif_var_character(tab[i]))
+			data->envp[data->len_envp + j++] = var_without_no_more(tab[i]);
+		else
+			data->envp[data->len_envp + j++] = ft_strdup(tab[i]);
+	}
+	return (j);
+}
+
+// void	export(char **tab, t_data *data)
+// {
+// 	int	i;
+// 	int index;
+// 	int	j;
+
+// 	i = 1;
+// 	j = 1;
+// 	if (!tab[1])
+// 	{
+// 		print_export(data);
+// 		return ;
+// 	}
+// 	while (tab[i])
+// 	{
+// 		index = check_same_var(tab[i], data);
+// 		if (index != -1)
+// 		{
+// 			free(data->envp[index]);
+// 			if (verif_var_character(tab[i]))
+// 				data->envp[index] = add_arg_to_var(index, tab[i], data);
+// 			else
+// 				data->envp[index] = ft_strdup(tab[i]);
+// 		}
+// 		else
+// 		{
+// 			free(data->envp[data->len_envp + j]);
+// 			if (verif_var_character(tab[i]))
+// 				data->envp[data->len_envp + j++] = var_without_no_more(tab[i]);
+// 			else
+// 				data->envp[data->len_envp + j++] = ft_strdup(tab[i]);
+// 		}
+// 		i++;
+// 	}
+// 	data->envp[data->len_envp + j] = NULL;
+// 	data->len_envp += j - 1;
+// }
+
+void	export(char **tab, t_data *data)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	j = 1;
+	if (!tab[1])
+	{
+		print_export(data);
+		return ;
+	}
+	while (tab[i])
+	{
+		j = loop_export(tab, i, j, data);
+		i++;
+	}
+	data->envp[data->len_envp + j] = NULL;
+	data->len_envp += j - 1;
 }

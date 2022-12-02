@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:51:01 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/19 21:39:52 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:47:15 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,36 @@
 
 // ------------------PROTOTYPE POUR LE ".h"------------------
 // {file} [line_parser.c]
-// char	*first_parser(char *line);
+// void	first_parser(t_data *data);
 // void	check_error_special_char(int i, char *str);
 // char	*clean_read_line(int i, char c, char *str);
 // int check_quote_and_char_next_to(int i, char c, char *str);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
-unsigned char	*first_parser(unsigned char *line)
+void	first_parser(t_data *data)
 {
 	char	*str;
 	int		i;
 
-	str = (char *)line;
+	str = (char *)data->line;
 	i = 0;
 	while (str[i])
 	{
 		check_error_special_char(i, str);
-		if ((str[i] == '\'' || str[i] == '\"') && str[i + 1])
+		if (str[i + 1] && ((str[i] == '\'' && str[i + 1] != '$') \
+		|| (str[i] == '\"')))
+		{
 			str = clean_read_line(i, str[i], str);
+			data->cmpt_line++;
+			if (i > 0)
+				i--;
+			else
+				i = 0;
+		}
 		i++;
 	}
-	line = (unsigned char *)str;
-	// printf("%s\n\n", line);
-	return (line);
+	data->line = (unsigned char *)str;
+	printf("%s\n\n", data->line);
 }
 
 void	check_error_special_char(int i, char *str)
@@ -59,12 +66,11 @@ void	check_error_special_char(int i, char *str)
 
 char	*clean_read_line(int i, char c, char *str)
 {
-	static int	no_malloc = 0;
+	static int	no_malloc;
 	int			j;
 	char		*clean;
 
-	if (check_quote_and_char_next_to(i, c, str) == -1)
-		return (str);
+	no_malloc = 0;
 	j = 0;
 	clean = malloc(sizeof(char) * (ft_strlen(str) - 1));
 	while (j < i)

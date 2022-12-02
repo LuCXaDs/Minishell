@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 16:33:18 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/23 19:59:02 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:47:14 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,17 @@
 void	fill_tab_arg(t_data *data)
 /*	Fill table with arguments (readline)	*/
 {
+	int	len;
+
 	data->fill_tab = malloc(sizeof(char *) * \
-	cmpt_words((char *)data->line) + 1);
-	while (data->line[data->check_tab.i])
+	cmpt_words((char *)data->line) + 8);
+	len = ft_strlen((char *)data->line);
+	while (data->check_tab.i < len)
 	{
 		while (data->line[data->check_tab.i] == ' ' \
 		&& data->line[data->check_tab.i])
 			data->check_tab.i++;
-		if (data->line[data->check_tab.i] == '\"')
-			find_quote('\"', data);
-		if (data->line[data->check_tab.i] == '\'')
-			find_quote('\'', data);
-		find_and_split(data);
-		if (data->check_tab.len > 0)
-		{
-			data->fill_tab[data->check_tab.j] = \
-			ft_substr((const char *)data->line, \
-			data->check_tab.i, data->check_tab.len);
-			data->check_tab.j++;
-		}
+		condition_fill_tab(data);
 		data->check_tab.i += data->check_tab.len;
 		while (data->line[data->check_tab.i] == ' ' \
 		&& data->line[data->check_tab.i])
@@ -63,18 +55,19 @@ void	find_and_split(t_data *data)
 		data->check_tab.len, data->line, 2) == 1)
 		{
 			if (check_character(data->check_tab.i, \
-			data->check_tab.len, data->line, 2) == 1)
+			data->check_tab.len, data->line, 3) == 1)
 				split_special_character(2, data);
-			else
+			else if (check_character(data->check_tab.i, \
+			data->check_tab.len, data->line, 2) == 1)
 				split_special_character(1, data);
-			break;
+			break ;
 		}
 		if (data->line[data->check_tab.i + data->check_tab.len] == '\'')
 			if (find_quote_next_to_char('\'', data) == -1)
-				break;
+				break ;
 		if (data->line[data->check_tab.i + data->check_tab.len] == '\"')
 			if (find_quote_next_to_char('\"', data) == -1)
-				break;
+				break ;
 		data->check_tab.len++;
 	}
 }
@@ -102,15 +95,15 @@ void	find_quote(char c, t_data *data)
 	}
 }
 
-void 	split_special_character(int len, t_data *data)
+void	split_special_character(int len, t_data *data)
 /*	Slit character	*/
 {
 	if (data->check_tab.len > 0)
 	{
-		data->fill_tab[data->check_tab.j] =
-		ft_substr((const char *)data->line,
-		data->check_tab.i, data->check_tab.len);
-		data->check_tab.j++;
+		data->fill_tab[data->check_tab.j] \
+		= ft_substr((const char *)data->line,
+			data->check_tab.i, data->check_tab.len);
+			data->check_tab.j++;
 	}
 	data->fill_tab[data->check_tab.j] = \
 	ft_substr((const char *)data->line, \
@@ -120,10 +113,10 @@ void 	split_special_character(int len, t_data *data)
 	data->check_tab.len = 0;
 }
 
-int		find_quote_next_to_char(char c, t_data *data)
+int	find_quote_next_to_char(char c, t_data *data)
 /*	Search character if they are peer	*/
 {
-	int quote;
+	int	quote;
 
 	quote = 0;
 	quote = data->check_tab.i + data->check_tab.len + 1;

@@ -1,0 +1,13 @@
+{
+	"files.associations": {
+		"unistd.h": "c",
+		"readline.h": "c",
+		"stdio.h": "c",
+		"minishell.h": "c",
+		"string.h": "c",
+		"history.h": "c"
+	},
+	"[c]": {
+        "editor.defaultFormatter": "keyhr.42-c-format"
+    },
+}

@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:59:21 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/23 20:39:17 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:48:11 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int ft_strlen(const char *s)
 {
 	int i;
 
-	i = 0;
 	if (!s)
 		return (0);
+	i = 0;
 	while (s[i])
 		i++;
 	return (i);
@@ -89,14 +89,16 @@ void	ft_bzero(void *s, size_t n)
 
 int	ft_strcmp(char *s1, char *s2)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	while (s1[i] && s2[i])
+	while (s1[i] || s2[i])
 	{
-		if (s1[i] != s2[i])
-			return (s1 - s2);
+		if (s1[i] < s2[i])
+			return (s1[i] - s2[i]);
+		if (s1[i] > s2[i])
+			return (s1[i] - s2[i]);
 		i++;
 	}
-	return (0);
+	return (s1[i] - s2[i]);
 }

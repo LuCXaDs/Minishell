@@ -6,25 +6,33 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 15:33:13 by luserbu           #+#    #+#             */
-/*   Updated: 2022/10/23 20:04:27 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:47:18 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// ------------------PROTOTYPE POUR LE ".h"------------------
+// {file} [print_env.c]
+// void	change_tab_path(int i, int temp, t_data *data);
+// int	loop_find_path(char *no_dollar, t_data *data);
+// int	find_path(int index_i, int index_j, t_data *data);
+// int	loop_search_path(int i, int j, int temp, t_data *data);
+// void	search_path(t_data *data);
+// ------------------PROTOTYPE POUR LE ".h"------------------
+
 void	change_tab_path(int i, int temp, t_data *data)
 {
-	char *str;
-	char *clean;
-	int k;
-	int j;
+	char	*str;
+	char	*clean;
+	int		k;
+	int		j;
 
 	str = data->fill_tab[i];
 	k = 0;
-	j = temp;
-	clean = malloc (sizeof(char *)  * ((ft_strlen(data->clean_var) \
-	+ ft_strlen(data->fill_tab[i]) \
-	- ft_strlen(data->var))));
+	j = 0;
+	clean = malloc(sizeof(char *) * ((ft_strlen(data->clean_var)
+					+ ft_strlen(data->fill_tab[i]) - ft_strlen(data->var))));
 	while (k < temp)
 	{
 		clean[k] = str[k];
@@ -32,145 +40,93 @@ void	change_tab_path(int i, int temp, t_data *data)
 	}
 	while (data->clean_var[j])
 		clean[k++] = data->clean_var[j++];
+	free(data->clean_var);
 	j = temp + ft_strlen(data->var);
-	while (str[j])
+	if (str[j] == '\'' || str[j] == '\"')
 		clean[k++] = str[j++];
 	clean[k] = '\0';
 	free(data->fill_tab[i]);
 	data->fill_tab[i] = clean;
+	free(data->var);
 }
 
-int check_quote(int i, char c, t_data *data)
-{
-	int j;
-
-	j = ft_strlen(data->fill_tab[i]) - 1;
-	if (data->fill_tab[i][0] == c)
-		if (data->fill_tab[i][j] == c)
-			return (-1);
-	return (1);
-}
-
-char	*clean_path(t_data *data)
-{
-	int		i;
-	int		j;
-	char	*s;
-
-	s = malloc(sizeof(char) * (ft_strlen(data->clean_var) - ft_strlen(data->var) + 1));
-	i = 0;
-	j = ft_strlen(data->var);
-	while (data->clean_var[j])
-		s[i++] = data->clean_var[j++];
-	s[i] = '\0';
-	return (s);
-}
-
-int	ft_str_path(char *big, char *little)
+int	loop_find_path(char *no_dollar, t_data *data)
 {
 	int	i;
 
 	i = 0;
-	while (big[i] == little[i])
+	while (data->envp[i])
 	{
-		i++;
-		if (little[i] == '\0' && big[i] == '=')
+		if (ft_str_path(data->envp[i], no_dollar) == 1)
+		{
+			data->clean_var = clean_path(data->envp[i], data);
+			free(no_dollar);
 			return (1);
+		}
+		i++;
 	}
-	return (-1);
+	return (0);
 }
 
-int	find_path(t_data *data)
+int	find_path(int index_i, int index_j, t_data *data)
 {
-	int i;
-	int j;
-	int len;
-	char *no_dollar;
+	int		i;
+	int		j;
+	char	*no_dollar;
 
 	if (!data->var || !data->var[1])
-		return (1);
+		return (0);
 	no_dollar = ft_calloc(sizeof(char), ft_strlen(data->var) + 1);
 	i = 1;
 	j = 0;
 	while (data->var[i])
 		no_dollar[j++] = data->var[i++];
 	no_dollar[i] = '\0';
-	i = 0;
-	len = ft_strlen(no_dollar);
-	while (data->env[i])
-	{
-		if (ft_str_path(data->env[i], no_dollar) == 1)
-		{
-			data->clean_var  = malloc(sizeof(char) \
-			* (ft_strlen(ft_strnstr(data->env[i], no_dollar, len)) + 1));
-			data->clean_var = ft_strnstr(data->env[i], no_dollar, len);
-			data->clean_var = clean_path(data);
-			free(no_dollar);
-			return (0);
-		}
-		i++;
-	}
-	// free(data->var);
-	return (1);
-}
-
-int	chech_correct_path_arg(int i, char *str)
-{
-	if (str[i] == '_' \
-	|| (str[i]  >= '0' && str[i]  <= '9') \
-	|| (str[i]  >= 'a' && str[i]  <= 'z') \
-	|| (str[i]  >= 'A' && str[i]  <= 'Z'))
+	if (loop_find_path(no_dollar, data))
 		return (1);
-	return (-1);
+	free(no_dollar);
+	data->fill_tab[index_i][index_j] = '\0';
+	free(data->var);
+	return (0);
 }
 
-// void	remove_path(int i, int temp, t_data *data)
-// {
-// 	char *str;
-// 	char *clean;
-// 	int k;
-// 	int j;
+int	loop_search_path(int i, int j, int temp, t_data *data)
+{
+	int	m;
 
+	m = 0;
+	if (data->fill_tab[i][j] == '$' && check_quote(i, '\'', data) == 1)
+	{
+		temp = j;
+		data->var = malloc(sizeof(char) * ft_strlen(data->fill_tab[i]) + 1);
+		data->var[m++] = data->fill_tab[i][j++];
+		while (chech_correct_path_arg(j, data->fill_tab[i]) == 1)
+			data->var[m++] = data->fill_tab[i][j++];
+		data->var[m] = '\0';
+	}
+	return (temp);
 
-// 	if (check_quote(i, '\'', data) == -1)
-// 		return ;
-// 	str = data->fill_tab[i];
-// 	clean = malloc(sizeof(char) * (ft_strlen(str) - ft_strlen(data->var))
-
-// }
+}
 
 void	search_path(t_data *data)
 {
-	int i;
+	int	i;
 	int j;
-	int	m;
 	int temp;
 
 	i = 0;
-	m = 0;
 	temp = 0;
 	while (data->fill_tab[i])
 	{
 		j = 0;
 		while (data->fill_tab[i][j])
 		{
-			if (data->fill_tab[i][j] == '$' && check_quote(i, '\'', data) == 1)
-			{
-				temp = j;
-				data->var = malloc(sizeof(char) * ft_strlen(data->fill_tab[i]) + 1);
-				data->var[m++] = data->fill_tab[i][j++];
-				while (chech_correct_path_arg(j, data->fill_tab[i]) == 1)
-					data->var[m++] = data->fill_tab[i][j++];
-				data->var[m] = '\0';
-			}
-			j++;
+			temp = loop_search_path(i, j, temp, data);
+			if (data->fill_tab[i][j])
+				j++;
 		}
-		if (find_path(data) == 0)
+		if (find_path(i, temp, data))
 			change_tab_path(i, temp, data);
-		// else
-		// 	remove_path(i, temp, data);
-		if (data->var)
-			data->var[0] = '\0';
 		i++;
 	}
 }
