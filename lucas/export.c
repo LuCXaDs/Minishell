@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:51:01 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/02 15:47:13 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/13 15:01:14 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 // ------------------PROTOTYPE POUR LE ".h"------------------
 // {file} [export.c]
-// int	check_same_var(char *tab, t_data *data);
-// char	*add_arg_to_var(int index, char *tab, t_data *data);
-// int	loop_export(char **tab, int i, int j, t_data *data);
-// void	export(char **tab, t_data *data);
+// int	check_same_var(char *tab, t_parse *parse);
+// char	*add_arg_witout_more(char *str);
+// char	*add_arg_to_var(int index, char *tab, t_parse *parse);
+// int	loop_export(char **tab, int i, int j, t_parse *parse);
+// void	export(char **tab, t_parse *parse);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
-int	check_same_var(char *tab, t_data *data)
+int	check_same_var(char *tab, t_parse *parse)
 {
 	int		i;
 	int		len;
@@ -35,10 +36,10 @@ int	check_same_var(char *tab, t_data *data)
 		len = len_tmp;
 	var = ft_strdup(tab);
 	var[len] = '\0';
-	while (data->envp[i])
+	while (parse->envp[i])
 	{
-		len = strlen_stop(data->envp[i], '=');
-		tmp = ft_strdup(data->envp[i]);
+		len = strlen_stop(parse->envp[i], '=');
+		tmp = ft_strdup(parse->envp[i]);
 		tmp[len] = '\0';
 		if (ft_strcmp(tmp, var) == 0)
 			return (free(tmp), free(var), i);
@@ -49,87 +50,70 @@ int	check_same_var(char *tab, t_data *data)
 	return (-1);
 }
 
-char	*add_arg_to_var(int index, char *tab, t_data *data)
+char	*add_arg_witout_more(char *str)
 {
 	int		i;
 	int		j;
 	char	*clean;
 
+	i = 0;
+	j = 0;
+	clean = malloc(sizeof(char) * ft_strlen(str));
+	while (str[i])
+	{
+		if (str[i] != '+')
+			clean[j++] = str[i];
+		i++;
+	}
+	clean[j] = '\0';
+	return (clean);
+}
+
+char	*add_arg_to_var(int index, char *tab, t_parse *parse)
+{
+	int		i;
+	int		j;
+	char	*clean;
+
+	if (is_this_character(tab, '='))
+		return (add_arg_witout_more(tab));
 	clean = malloc(sizeof(char) * ft_strlen(tab));
 	i = strlen_stop(tab, '=') + 1;
 	j = 0;
 	while (tab[i])
 		clean[j++] = tab[i++];
 	clean[j] = '\0';
-	clean = ft_strjoin(data->envp[index], clean);
+	clean = ft_strjoin(parse->envp[index], clean);
 	return (clean);
 }
 
-int	loop_export(char **tab, int i, int j, t_data *data)
+int	loop_export(char **tab, int i, int j, t_parse *parse)
 {
-	int	index;
-	char *tmp;
+	int		index;
+	char	*tmp;
 
-	index = check_same_var(tab[i], data);
+	index = check_same_var(tab[i], parse);
 	if (index != -1)
 	{
 		if (verif_var_character(tab[i]))
-			tmp = add_arg_to_var(index, tab[i], data);
+			tmp = add_arg_to_var(index, tab[i], parse);
 		else
 			tmp = ft_strdup(tab[i]);
-		free(data->envp[index]);
-		data->envp[index] = tmp;
+		free(parse->envp[index]);
+		parse->envp[index] = tmp;
 	}
 	else
 	{
-		free(data->envp[data->len_envp + j]);
+		free(parse->envp[parse->len_envp + j]);
 		if (verif_var_character(tab[i]))
-			data->envp[data->len_envp + j++] = var_without_no_more(tab[i]);
+			parse->envp[parse->len_envp + j++] = var_without_no_more(tab[i]);
 		else
-			data->envp[data->len_envp + j++] = ft_strdup(tab[i]);
+			parse->envp[parse->len_envp + j++] = ft_strdup(tab[i]);
 	}
 	return (j);
 }
 
-// void	export(char **tab, t_data *data)
-// {
-// 	int	i;
-// 	int index;
-// 	int	j;
-
-// 	i = 1;
-// 	j = 1;
-// 	if (!tab[1])
-// 	{
-// 		print_export(data);
-// 		return ;
-// 	}
-// 	while (tab[i])
-// 	{
-// 		index = check_same_var(tab[i], data);
-// 		if (index != -1)
-// 		{
-// 			free(data->envp[index]);
-// 			if (verif_var_character(tab[i]))
-// 				data->envp[index] = add_arg_to_var(index, tab[i], data);
-// 			else
-// 				data->envp[index] = ft_strdup(tab[i]);
-// 		}
-// 		else
-// 		{
-// 			free(data->envp[data->len_envp + j]);
-// 			if (verif_var_character(tab[i]))
-// 				data->envp[data->len_envp + j++] = var_without_no_more(tab[i]);
-// 			else
-// 				data->envp[data->len_envp + j++] = ft_strdup(tab[i]);
-// 		}
-// 		i++;
-// 	}
-// 	data->envp[data->len_envp + j] = NULL;
-// 	data->len_envp += j - 1;
-// }
-
-void	export(char **tab, t_data *data)
+void	export(char **tab, t_parse *parse)
 {
 	int	i;
 	int	j;
@@ -138,14 +122,17 @@ void	export(char **tab, t_data *data)
 	j = 1;
 	if (!tab[1])
 	{
-		print_export(data);
+		print_export(parse);
 		return ;
 	}
 	while (tab[i])
 	{
-		j = loop_export(tab, i, j, data);
+		if (!check_valid_identifier(tab[i]))
+			ft_error(NULL, 0x011, TRUE, parse);
+		else
+			j = loop_export(tab, i, j, parse);
 		i++;
 	}
-	data->envp[data->len_envp + j] = NULL;
-	data->len_envp += j - 1;
+	parse->envp[parse->len_envp + j] = NULL;
+	parse->len_envp += j - 1;
 }

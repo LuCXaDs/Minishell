@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 16:35:07 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/02 15:47:19 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/13 14:54:46 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 
 char			**ft_tab(const char *s, char c, char **final_tab);
 static size_t	ft_words(const char *s, char c);
+char			*last_tab(const char *s, unsigned int start, \
+				size_t len, char *str);
 
 char	**ft_split(char const *s, char c)
 {
@@ -81,8 +83,6 @@ char	**ft_tab(const char *s, char c, char **final_tab)
 	final_tab[y] = NULL;
 	return (final_tab);
 }
-
-char	*last_tab(const char *s, unsigned int start, size_t len, char *str);
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {

@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:51:01 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/02 15:47:12 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/13 14:51:24 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 // int	verif_letter(char *tab);
 // int	loop_strdiff(int i, int j, char *s1, char *s2);
 // int	ft_strdiff(char *s1, char *s2);
-// int	exit_lol(char **tab);
+// int	exit_function(char **tab, t_parse *parse);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
 int	verif_letter(char *tab)
@@ -76,19 +76,19 @@ int	ft_strdiff(char *s1, char *s2)
 	return (1);
 }
 
-int	exit_lol(char **tab)
+int	exit_function(char **tab, t_parse *parse)
 {
-	unsigned char   c;
+	unsigned char	c;
 
 	if (!tab[1])
-		printf("GOOD");
+		ft_exit(0, parse);
 	else if (!verif_letter(tab[1]))
-		printf("bash: exit: %s: numeric argument required\n", tab[1]);
+		ft_error(tab[1], 0x01, TRUE, parse);
 	else if (tab[2])
-		printf("bash: exit: too many arguments\n");
+		ft_error(NULL, 0x02, TRUE, parse);
 	else if (!ft_strdiff("9223372036854775807", tab[1]))
-		printf("bash: exit: %s: numeric  required\n", tab[1]);
+		ft_error(tab[1], 0x03, TRUE, parse);
 	c = ft_atoi(tab[1]);
-	printf("%d\n", c);
-	return (c);
+	ft_exit(c, parse);
+	return (0);
 }

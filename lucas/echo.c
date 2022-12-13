@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 16:13:06 by gtelnoff          #+#    #+#             */
-/*   Updated: 2022/12/02 15:47:11 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/13 11:44:45 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,18 @@ char	*double_tab_to_simple(char **array, int n)
 	return (str);
 }
 
-int	verif_arg_echo(char *tab)
+int	verif_arg_echo(char *str)
 {
 	int	i;
 
-	if (tab[0] != '-' || tab[1] == '\0')
+	if (str[0] == '-' && str[1] == 'n' && str[2] == '\0')
+		return (2);
+	if (str[0] != '-' || str[1] == '\0')
 		return (0);
 	i = 1;
-	while (tab[i])
+	while (str[i])
 	{
-		if (tab[i] != 'n')
+		if (str[i] != 'n')
 			return (0);
 		i++;
 	}
@@ -87,11 +89,19 @@ void	echo(char **tab)
 	int		n;
 	char	*str;
 
+	if (!tab[1])
+	{
+		printf("\n");
+		return ;
+	}
 	n = verif_arg_echo(tab[1]);
+	if (n == 2 && !tab[2])
+		return ;
+	if (n == 2)
+		n = 1;
 	str = double_tab_to_simple(tab, n);
 	if (n == 1)
 		printf("%s", str);
 	else
 		printf("%s\n", str);
-	printf("$\n");
 }

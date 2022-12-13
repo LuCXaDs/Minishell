@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 19:05:52 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/02 15:46:58 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/13 15:00:58 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 // {file} [print_export.c]
 // char	*add_quote2(char *tmp, int count, int i, int j);
 // char	*add_quote(char *str);
-// void	add_argument_into_export(t_data *data);
-// void	sort_loop(t_data *data);
-// void	print_export(t_data *data);
+// void	add_argument_into_export(t_parse *parse);
+// void	sort_loop(t_parse *parse);
+// void	print_export(t_parse *parse);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
 char	*add_quote2(char *tmp, int count, int i, int j)
@@ -31,12 +31,12 @@ char	*add_quote2(char *tmp, int count, int i, int j)
 	else
 		tmp[j] = '\0';
 	i = ft_strlen(tmp);
-	if (tmp[i] && tmp[i - 1])
+	if (i > 2)
 	{
-		if (tmp[i] == '\"' && tmp[i - 1] == '=')
+		if (tmp[i - 1] == '\"' && tmp[i - 2] == '=')
 		{
-			tmp[i + 1] = '\"';
-			tmp[i + 2] = '\0';
+			tmp[i] = '\"';
+			tmp[i + 1] = '\0';
 		}
 	}
 	return (tmp);
@@ -70,26 +70,26 @@ char	*add_quote(char *str)
 	return (add_quote2(tmp, count, i, j));
 }
 
-void	add_argument_into_export(t_data *data)
+void	add_argument_into_export(t_parse *parse)
 {
 	int		i;
 	char	*tmp;
 
 	i = 0;
-	while (data->env[i])
+	while (parse->env[i])
 	{
-		tmp = ft_strjoin("declare -x ", data->env[i]);
+		tmp = ft_strjoin("declare -x ", parse->env[i]);
 		tmp = add_quote(tmp);
-		free(data->env[i]);
-		data->env[i] = tmp;
-		printf("%s\n", data->env[i]);
-		free(data->env[i]);
+		free(parse->env[i]);
+		parse->env[i] = tmp;
+		printf("%s\n", parse->env[i]);
+		free(parse->env[i]);
 		i++;
 	}
-	free(data->env);
+	free(parse->env);
 }
 
-void	sort_loop(t_data *data)
+void	sort_loop(t_parse *parse)
 {
 	int		i;
 	int		j;
@@ -97,16 +97,16 @@ void	sort_loop(t_data *data)
 
 	j = 1;
 	i = 0;
-	while (data->env[j])
+	while (parse->env[j])
 	{
 		i = 0;
-		while (data->env[i])
+		while (parse->env[i])
 		{
-			if (ft_strcmp(data->env[i], data->env[j]) > 0)
+			if (ft_strcmp(parse->env[i], parse->env[j]) > 0)
 			{
-				temp = data->env[i];
-				data->env[i] = data->env[j];
-				data->env[j] = temp;
+				temp = parse->env[i];
+				parse->env[i] = parse->env[j];
+				parse->env[j] = temp;
 			}
 			i++;
 		}
@@ -114,18 +114,18 @@ void	sort_loop(t_data *data)
 	}
 }
 
-void	print_export(t_data *data)
+void	print_export(t_parse *parse)
 {
 	int	i;
 
 	i = 0;
-	data->env = malloc(sizeof(char *) * 4096);
-	while (data->envp[i])
+	parse->env = malloc(sizeof(char *) * 4096);
+	while (parse->envp[i])
 	{
-		data->env[i] = ft_substr(data->envp[i], 0, ft_strlen(data->envp[i]));
+		parse->env[i] = ft_substr(parse->envp[i], 0, ft_strlen(parse->envp[i]));
 		i++;
 	}
-	data->env[i] = NULL;
-	sort_loop(data);
-	add_argument_into_export(data);
+	parse->env[i] = NULL;
+	sort_loop(parse);
+	add_argument_into_export(parse);
 }

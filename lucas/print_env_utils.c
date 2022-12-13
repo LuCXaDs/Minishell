@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 15:33:13 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/01 14:46:37 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/12 22:45:24 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 // ------------------PROTOTYPE POUR LE ".h"------------------
 // {file} [print_env_utils.c]
-// int	ft_strlentab(char **tab);
-// int	check_quote(int i, char c, t_data *data);
-// char	*clean_path(char *path, t_data *data);
+// int	ft_tablen(char **tab);
+// int	check_quote(int i, char c, t_parse *parse);
+// char	*clean_path(char *path, t_parse *parse);
 // int	ft_str_path(char *big, char *little);
 // int	chech_correct_path_arg(int i, char *str);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
-int	ft_strlentab(char **tab)
+int	ft_tablen(char **tab)
 {
 	int	i;
 
@@ -31,26 +31,26 @@ int	ft_strlentab(char **tab)
 	return (i);
 }
 
-int	check_quote(int i, char c, t_data *data)
+int	check_quote(int i, char c, t_parse *parse)
 {
 	int	j;
 
-	j = ft_strlen(data->fill_tab[i]) - 1;
-	if (data->fill_tab[i][0] == c)
-		if (data->fill_tab[i][j] == c)
+	j = ft_strlen(parse->fill_tab[i]) - 1;
+	if (parse->fill_tab[i][0] == c)
+		if (parse->fill_tab[i][j] == c)
 			return (-1);
 	return (1);
 }
 
-char	*clean_path(char *path, t_data *data)
+char	*clean_path(char *path, t_parse *parse)
 {
 	int		i;
 	int		j;
 	char	*s;
 
-	s = malloc(sizeof(char) * (ft_strlen(path) - ft_strlen(data->var) + 1));
+	s = malloc(sizeof(char) * (ft_strlen(path) - ft_strlen(parse->var) + 1));
 	i = 0;
-	j = ft_strlen(data->var);
+	j = ft_strlen(parse->var);
 	while (path[j])
 		s[i++] = path[j++];
 	s[i] = '\0';

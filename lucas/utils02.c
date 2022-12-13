@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:59:21 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/02 15:48:11 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/13 14:55:09 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 // int	ft_strcmp(char *s1, char *s2);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
-int ft_strlen(const char *s)
+int	ft_strlen(const char *s)
 {
-	int i;
+	int	i;
 
 	if (!s)
 		return (0);

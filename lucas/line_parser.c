@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:51:01 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/02 15:47:15 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/13 14:51:06 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,92 +14,42 @@
 
 // ------------------PROTOTYPE POUR LE ".h"------------------
 // {file} [line_parser.c]
-// void	first_parser(t_data *data);
-// void	check_error_special_char(int i, char *str);
-// char	*clean_read_line(int i, char c, char *str);
-// int check_quote_and_char_next_to(int i, char c, char *str);
+// char	*special_check(char *str, t_parse *parse);
+// int	first_parser(t_parse *parse);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
-void	first_parser(t_data *data)
+char	*special_check(char *str, t_parse *parse)
 {
-	char	*str;
-	int		i;
+	parse->index.i = 0;
+	while (str[parse->index.i])
+	{
+		str = condition_special_check(str, parse->index.i, parse);
+		if (!str[parse->index.i])
+			break ;
+		parse->index.i++;
+	}
+	parse->index.i = 0;
+	return (str);
+}
 
-	str = (char *)data->line;
+int	first_parser(t_parse *parse)
+{
+	int	i;
+	int	temp;
+
 	i = 0;
-	while (str[i])
+	if (!peer_quote(parse->line))
 	{
-		check_error_special_char(i, str);
-		if (str[i + 1] && ((str[i] == '\'' && str[i + 1] != '$') \
-		|| (str[i] == '\"')))
-		{
-			str = clean_read_line(i, str[i], str);
-			data->cmpt_line++;
-			if (i > 0)
-				i--;
-			else
-				i = 0;
-		}
-		i++;
+		ft_error(NULL, 0x0111, TRUE, parse);
+		return (FALSE);
 	}
-	data->line = (unsigned char *)str;
-	printf("%s\n\n", data->line);
-}
-
-void	check_error_special_char(int i, char *str)
-{
-	if (str[i] == '<' && str[i])
-		if (str[i + 1] == '<' && str[i + 1])
-			if (str[i + 2] == '<' && str[i + 2])
-				printf("Error\n");
-	if (str[i] == '>' && str[i])
-		if (str[i + 1] == '>' && str[i + 1])
-			if (str[i + 2] == '>' && str[i + 2])
-				printf("Error\n");
-	if (str[i] == '|' && str[i])
-		if (str[i + 1] == '|' && str[i + 1])
-			printf("Error\n");
-	if (str[i] == '&' && str[i])
-		if (str[i + 1] == '&' && str[i + 1])
-			printf("Error\n");
-}
-
-char	*clean_read_line(int i, char c, char *str)
-{
-	static int	no_malloc;
-	int			j;
-	char		*clean;
-
-	no_malloc = 0;
-	j = 0;
-	clean = malloc(sizeof(char) * (ft_strlen(str) - 1));
-	while (j < i)
+	if (!check_dollar_character(parse->line))
 	{
-		clean[j] = str[j];
-		j++;
+		ft_error(parse->line, 0x0112, TRUE, parse);
+		return (FALSE);
 	}
-	i += 1;
-	while (str[i] != c)
-		clean[j++] = str[i++];
-	i += 1;
-	while (str[i])
-		clean[j++] = str[i++];
-	clean[j] = '\0';
-	if (no_malloc != 0)
-		free(str);
-	no_malloc++;
-	return (clean);
-}
-
-int	check_quote_and_char_next_to(int i, char c, char *str)
-{
-	i += 1;
-	while (str[i] != c && str[i])
-	{
-		if ((str[i] >= 'a' && str[i] <= 'z') || str[i] == c)
-			i++;
-		else
-			return (-1);
-	}
-	return (1);
+	if (check_quoted_string(parse->line) || check_unquoted_string(parse->line))
+		parse->line = special_check(parse->line, parse);
+	parse->line = second_parser(parse->line, parse);
+	return (TRUE);
 }

@@ -6,7 +6,7 @@
 /*   By: luserbu <luserbu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:44:45 by luserbu           #+#    #+#             */
-/*   Updated: 2022/12/02 15:47:14 by luserbu          ###   ########.fr       */
+/*   Updated: 2022/12/12 22:45:24 by luserbu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 // ------------------PROTOTYPE POUR LE ".h"------------------
 // {file} [fill_tab_arg_utils.c]
 // int	ft_words(char *s);
-// int	check_character(int i, int len, unsigned char * str, int nb);
-// void	condition_fill_tab(t_data *data);
+// int	check_character(int i, int len, char * str, int nb);
+// void	condition_fill_tab(t_parse *parse);
 // ------------------PROTOTYPE POUR LE ".h"------------------
 
 int	cmpt_words(char *s)
@@ -43,35 +43,35 @@ int	cmpt_words(char *s)
 	return (cmpt + 1);
 }
 
-int	check_character(int i, int len, unsigned char *str, int nb)
+int	check_character(int i, int len, char *str, int nb)
 /*	Check character about value of nb	*/
 {
 	if (nb == 1)
 		if (str[i + len] != ' ' && str[i + len])
-			return (1);
+			return (TRUE);
 	if (nb == 3)
 		if ((str[i + len] == '>' && str[i + len + 1] == '>') \
 		|| (str[i + len] == '<' && str[i + len + 1] == '<'))
-			return (1);
+			return (TRUE);
 	if (nb == 2)
 		if (str[i + len] == '|' || str[i + len] == '>' \
 		|| str[i + len] == '<')
-			return (1);
-	return (-1);
+			return (TRUE);
+	return (FALSE);
 }
 
-void	condition_fill_tab(t_data *data)
+void	condition_fill_tab(t_parse *parse)
 {
-	if (data->line[data->check_tab.i] == '\"')
-		find_quote('\"', data);
-	if (data->line[data->check_tab.i] == '\'')
-		find_quote('\'', data);
-	find_and_split(data);
-	if (data->check_tab.len > 0)
+	if (parse->line[parse->index.i] == '\"')
+		find_quote('\"', parse);
+	if (parse->line[parse->index.i] == '\'')
+		find_quote('\'', parse);
+	find_and_split(parse);
+	if (parse->index.len > 0)
 	{
-		data->fill_tab[data->check_tab.j] = \
-		ft_substr((const char *)data->line, \
-		data->check_tab.i, data->check_tab.len);
-		data->check_tab.j++;
+		parse->fill_tab[parse->index.j] = \
+		ft_substr((const char *)parse->line, \
+		parse->index.i, parse->index.len);
+		parse->index.j++;
 	}
 }
